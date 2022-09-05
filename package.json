@@ -9,13 +9,12 @@
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
-    "publish": "electron-builder --win --publish always"
+    "publish": "electron-builder -p always"
   },
   "main": "background.js",
   "dependencies": {
     "autoprefixer": "10.4.5",
     "axios": "^0.27.2",
-    "better-sqlite3-with-prebuilds": "^7.4.3",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.8.3",
