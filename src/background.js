@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow ,ipcMain,remote} from 'electron'
+import { app, protocol, BrowserWindow ,ipcMain,remote,dialog} from 'electron'
 const path = require('path')
 const {autoUpdater} = require('electron-updater')
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
@@ -110,8 +110,28 @@ autoUpdater.on('checking-for-update', () => {
   console.log('Checking for update...')
 })
 
-autoUpdater.on('update-available', () => {
-  console.log('Update available.')
+autoUpdater.on('update-available', (_event,releaseNote,releaseName) => {
+  const dialoopts = {
+    type:'info',
+    buttons:['Ok'],
+    title:'Mise à jour application',
+    message:process.platform === 'win32' ? releaseNote : releaseName,
+    detail:"Nouvelle version de l'application disponible."
+  }
+  dialog.showMessageBox(dialoopts,(response)=>{})
+})
+
+autoUpdater.on('update-downloaded', (_event,releaseNote,releaseName) => {
+  const dialoopts = {
+    type:'info',
+    buttons:['Redemarrer maintenant','Redemarrer après'],
+    title:'Mise à jour application',
+    message:process.platform === 'win32' ? releaseNote : releaseName,
+    detail:"La mise à jour de l'application a été téléchargée. Redemarrer l'application SVP"
+  }
+  dialog.showMessageBox(dialoopts).then((returnvalue)=>{
+    if (returnvalue.response === 0) autoUpdater.quitAndInstall()
+  })
 })
 
 autoUpdater.on('update-not-available', () => {
