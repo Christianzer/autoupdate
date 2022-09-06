@@ -40,7 +40,11 @@ const routes = [
         name: 'entree',
         component: () => import('@/components/entree/index.vue')
       },
-    
+      {
+        name: 'listes_factures',
+        path: '/listes_factures/:id',
+        component: () => import('@/components/listes/index.vue')
+      },
     ]
   }
 ]

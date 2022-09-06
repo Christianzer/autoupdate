@@ -3,16 +3,13 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <b-breadcrumb>
         <b-breadcrumb-item>Gestion de caisse OBF</b-breadcrumb-item>
-        <b-breadcrumb-item>Entrée de caisse</b-breadcrumb-item>
+        <b-breadcrumb-item>Factures</b-breadcrumb-item>
       </b-breadcrumb>
-    </div>
-    <div class="text-right" >
-      <b-button variant="primary" @click="openModal" >Créer un nouveau client</b-button>
     </div>
     <br>
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        Listes des clients
+        Listes des factures
       </div>
       <div class="card-body">
         <template v-if="loader === false">
@@ -37,45 +34,32 @@
               :current-page="currentPage"
               :per-page="perPage"
           >
-            <template v-slot:cell(nom)="row">
-              {{row.item.nom}} {{row.item.prenoms}}
+            <template v-slot:cell(total_payer)="row">
+              {{new Intl.NumberFormat().format(row.item.total_payer)}} FCFA
+            </template>
+            <template v-slot:cell(montant_facture_entre)="row">
+              {{new Intl.NumberFormat().format(row.item.montant_facture_entre)}} FCFA
+            </template>
+            <template v-slot:cell(reste_payer)="row">
+              {{new Intl.NumberFormat().format(row.item.reste_payer)}} FCFA
             </template>
             <template v-slot:cell(actions)="row">
               <b-button
                   size="sm"
                   variant="outline-success"
                   class="mr-1"
-                  @click="openModalFacture(row.item.id_personne)"
+                  @click="openModalVersement(row.item)"
+                  v-if="row.item.reste_payer > 0"
               >
-                faire une facture
+                faire un versement
               </b-button>
               <b-button
                   size="sm"
                   variant="outline-info"
                   class="mr-1"
-                  @click="redirect(row.item.id_personne)"
               >
-                listes de ses factures
+                listes des versements
               </b-button>
-              <b-button
-                  size="sm"
-                  variant="outline-primary"
-                  @click="modifier(row.item)"
-                  class="mr-1"
-              >
-                modifier client
-              </b-button>
-
-              <b-button
-                  size="sm"
-                  variant="outline-danger"
-                  class="mr-1"
-                  @click="supprimer(row.item.id_personne)"
-              >
-                supprimer client
-              </b-button>
-
-
             </template>
           </b-table>
           <b-pagination
@@ -88,18 +72,18 @@
       </div>
 
     </div>
-
-    <Form ref="modal"></Form>
-    <Facture ref="modalFacture"></Facture>
+    <Versement ref="versementmodal"></Versement>
   </div>
 </template>
 
 <script>
 const axios = require('axios')
-import Form from "@/components/entree/form";
-import Facture from "@/components/entree/facture";
+import Versement from "@/components/listes/versement";
 export default {
   name: "index",
+  components : {
+    Versement
+  },
   data(){
     return {
       filter :"",
@@ -111,65 +95,66 @@ export default {
       selectedCode: null,
       fields : [
         {
-          key:'nom',
-          label: 'Clients',
+          key:'code_facture_entre',
+          label: 'Code Facture',
           sortable:true,
         },
         {
-          key:'telephone',
-          label:'Contact',
+          key:'libelle_facture_entre',
+          label: 'Libelle Facture',
           sortable:true,
         },
+        {
+          key:'date_facture_entre',
+          label: 'Date facture',
+          sortable:true,
+        },
+        {
+          key:'montant_facture_entre',
+          label: 'Montant Facture',
+          sortable:true,
+        },
+        {
+          key:'total_payer',
+          label: 'Montant Total Versé',
+          sortable:true,
+        },
+        {
+          key:'reste_payer',
+          label: 'Reste à payer',
+          sortable:true,
+        },
+
         {
           key: 'actions'
         }
       ]
     }
   },
-  components: {
-    Form,Facture
-  },
   created() {
     this.fetchclients()
     //localStorage.removeItem('matricule')
-    Fire.$on('creationok',()=>{
+    Fire.$on('paiement',()=>{
       this.fetchclients();
     })
 
   },
   methods: {
-    async fetchclients(){
+    async fetchclients() {
       this.loader = false
-      let api = 'http://127.0.0.1:8000/api/personne'
-      await axios.get(api).then(response=>{
-        let statut = response.status
-        if (statut === 200){
-          this.all_clients = response.data
-          this.totalRows = this.all_clients.length
-        }
+      let api = 'http://127.0.0.1:8000/api/factures_caisses/'+this.$route.params.id
+      await axios.get(api).then(response => {
+        this.all_clients = response.data
       }).catch((err) => {
         console.log(err)
       })
       this.loader = true
     },
-    openModal() {
-      this.$refs.modal.editMode = false
-      this.$refs.modal.showModal()
+    openModalVersement(item) {
+      this.$refs.versementmodal.item = item
+      this.$refs.versementmodal.showModal()
     },
-    openModalFacture(id) {
-      this.$refs.modalFacture.personne = id
-      this.$refs.modalFacture.showModalFacture()
-    },
-    async modifier(dataPat) {
-      this.$refs.modal.selectedTA = dataPat
-      this.$refs.modal.editMode = true
-      this.$refs.modal.showModal()
-    },
-    async redirect(id) {
-      this.$router.push({ name: 'listes_factures', params: { id:id} })
-    },
-  },
-
+  }
 }
 </script>
 

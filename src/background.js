@@ -18,7 +18,7 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 800,
     height: 600,
-    title:'G-STOCK OBF',
+    title:'G-CAISSE OBF',
     autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
