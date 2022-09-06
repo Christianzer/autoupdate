@@ -57,6 +57,7 @@
                   size="sm"
                   variant="outline-info"
                   class="mr-1"
+                  @click="openversement(row.item.code_facture_entre)"
               >
                 listes des versements
               </b-button>
@@ -154,6 +155,9 @@ export default {
       this.$refs.versementmodal.item = item
       this.$refs.versementmodal.showModal()
     },
+    openversement(item){
+      this.$router.push({ name: 'listes_versements', params: { id:item} })
+    }
   }
 }
 </script>
