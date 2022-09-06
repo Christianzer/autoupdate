@@ -2,7 +2,7 @@
   <div class="container-fluid p-3">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <b-breadcrumb>
-        <b-breadcrumb-item>Gestion de stock OBF</b-breadcrumb-item>
+        <b-breadcrumb-item>Gestion de caisse OBF</b-breadcrumb-item>
         <b-breadcrumb-item>Tableau de bord</b-breadcrumb-item>
       </b-breadcrumb>
     </div>
@@ -18,6 +18,47 @@
       </div>
     </template>
     <template v-else>
+      <div class="row">
+        <div class="col-xl-3 col-md-3 mb-4">
+          <div class="card border-left-success-perso shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs-perso font-weight-bold text-primary text-uppercase mb-1">Chiffres d'affaires</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{dashboard.chiffres}} FCFA</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-3 mb-4">
+          <div class="card border-left-success-perso shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs-perso font-weight-bold text-primary text-uppercase mb-1">Entree de caisse</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{dashboard.entree}} FCFA</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-md-3 mb-4">
+          <div class="card border-left-success-perso shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs-perso font-weight-bold text-primary text-uppercase mb-1">Sortie de caisse</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{dashboard.sortie}} FCFA</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </template>
   </div>
 </template>
@@ -30,11 +71,17 @@ export default {
   data(){
     return {
       isLoading : false,
+      dashboard : []
     }
   },
   methods:{
     async fetchdata(){
       this.isLoading = false
+      await this.$http.get("http://127.0.0.1:8000/api/dashboard").then((response) => {
+        this.dashboard = response.data
+      }).catch((err) => {
+        console.log(err)
+      })
       this.isLoading = true
     },
   },

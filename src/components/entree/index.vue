@@ -1,0 +1,185 @@
+<template>
+  <div class="container-fluid p-3">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+      <b-breadcrumb>
+        <b-breadcrumb-item>Gestion de caisse OBF</b-breadcrumb-item>
+        <b-breadcrumb-item>Entrée de caisse</b-breadcrumb-item>
+      </b-breadcrumb>
+    </div>
+    <div class="text-right" >
+      <b-button variant="primary" @click="openModal" >Créer un nouveau client</b-button>
+    </div>
+    <br>
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        Listes des clients
+      </div>
+      <div class="card-body">
+        <template v-if="loader === false">
+          <div class="text-center">
+            <b-spinner style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
+            <b-spinner style="width: 3rem; height: 3rem;" label="Large Spinner" type="grow"></b-spinner>
+          </div>
+        </template>
+        <template v-else>
+          <b-col md="3" align="right">
+            <b-form-input type="search" id="filterInput" v-model="filter" placeholder="Rechercher....."></b-form-input>
+          </b-col>
+          <br>
+          <b-table
+              head-variant="light"
+              bordered
+              hover
+              responsive="xl"
+              :items="all_clients"
+              :fields="fields"
+              :filter="filter"
+              :current-page="currentPage"
+              :per-page="perPage"
+          >
+            <template v-slot:cell(nom)="row">
+              {{row.item.nom}} {{row.item.prenoms}}
+            </template>
+            <template v-slot:cell(actions)="row">
+              <b-button
+                  size="sm"
+                  variant="outline-success"
+                  class="mr-1"
+                  @click="openModalFacture(row.item.id_personne)"
+              >
+                faire une facture
+              </b-button>
+              <b-button
+                  size="sm"
+                  variant="outline-info"
+                  class="mr-1"
+              >
+                listes de ses factures
+              </b-button>
+              <b-button
+                  size="sm"
+                  variant="outline-primary"
+                  @click="modifier(row.item)"
+                  class="mr-1"
+              >
+                modifier client
+              </b-button>
+
+              <b-button
+                  size="sm"
+                  variant="outline-danger"
+                  class="mr-1"
+                  @click="supprimer(row.item.id_personne)"
+              >
+                supprimer client
+              </b-button>
+
+
+            </template>
+          </b-table>
+          <b-pagination
+              :total-rows="totalRows"
+              :per-page="perPage"
+              v-model="currentPage"
+              class="my-0 pagination-sm"
+          />
+        </template>
+      </div>
+
+    </div>
+
+    <Form ref="modal"></Form>
+    <Facture ref="modalFacture"></Facture>
+  </div>
+</template>
+
+<script>
+const axios = require('axios')
+import Form from "@/components/entree/form";
+import Facture from "@/components/entree/facture";
+export default {
+  name: "index",
+  data(){
+    return {
+      filter :"",
+      all_clients:[],
+      currentPage: 1,
+      loader : false,
+      perPage: 10,
+      totalRows: null,
+      selectedCode: null,
+      fields : [
+        {
+          key:'nom',
+          label: 'Clients',
+          sortable:true,
+        },
+        {
+          key:'telephone',
+          label:'Contact',
+          sortable:true,
+        },
+        {
+          key: 'actions'
+        }
+      ]
+    }
+  },
+  components: {
+    Form,Facture
+  },
+  created() {
+    this.fetchclients()
+    //localStorage.removeItem('matricule')
+    Fire.$on('creationok',()=>{
+      this.fetchclients();
+    })
+
+  },
+  methods: {
+    async fetchclients(){
+      this.loader = false
+      let api = 'http://127.0.0.1:8000/api/personne'
+      await axios.get(api).then(response=>{
+        let statut = response.status
+        if (statut === 200){
+          this.all_clients = response.data
+          this.totalRows = this.all_clients.length
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+      this.loader = true
+    },
+    openModal() {
+      this.$refs.modal.editMode = false
+      this.$refs.modal.showModal()
+    },
+    openModalFacture(id) {
+      this.$refs.modalFacture.personne = id
+      this.$refs.modalFacture.showModalFacture()
+    },
+    async modifier(dataPat) {
+      this.$refs.modal.selectedTA = dataPat
+      this.$refs.modal.editMode = true
+      this.$refs.modal.showModal()
+    },
+    async supprimer(code) {
+      let urlapi = `http://127.0.0.1:8000/api/personne/${code}`
+      await axios.delete(urlapi).then((response) => {
+        let statut = response.status
+        if (statut === 201) {
+          this.fetchclients()
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+  },
+
+}
+</script>
+
+<style scoped>
+
+</style>

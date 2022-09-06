@@ -35,6 +35,11 @@ const routes = [
         name: 'dashboard',
         component: () => import('@/components/admin/index.vue')
       },
+      {
+        path: '/entree',
+        name: 'entree',
+        component: () => import('@/components/entree/index.vue')
+      },
     
     ]
   }
@@ -42,7 +47,6 @@ const routes = [
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
   linkActiveClass: "active", // active class for non-exact links.
   linkExactActiveClass: "active", // active class for *exact* links.
   routes
