@@ -57,7 +57,7 @@ export default {
   methods: {
     showModal() {
       if (this.editMode === true) {
-        this.selected = this.selectedTA.id_personne
+        this.selected = this.selectedTA.id
         this.formData.nom = this.selectedTA.nom
         this.formData.prenoms = this.selectedTA.prenoms
         this.formData.telephone = this.selectedTA.telephone

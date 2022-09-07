@@ -41,6 +41,11 @@ const routes = [
         component: () => import('@/components/entree/index.vue')
       },
       {
+        path: '/sortie',
+        name: 'sortie',
+        component: () => import('@/components/sortie/index.vue')
+      },
+      {
         name: 'listes_factures',
         path: '/listes_factures/:id',
         component: () => import('@/components/listes/index.vue')
@@ -49,6 +54,11 @@ const routes = [
         name: 'listes_versements',
         path: '/listes_versements/:id',
         component: () => import('@/components/listes/listes_versement.vue')
+      },
+      {
+        name: 'listes_sorties',
+        path: '/listes_sorties/:id',
+        component: () => import('@/components/sortie/listes_sorties.vue')
       },
     ]
   }

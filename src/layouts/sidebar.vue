@@ -27,7 +27,7 @@
             </router-link>
         </li>
         <li class="nav-item">
-            <router-link class="nav-link" :to="{name : 'dashboard'}">
+            <router-link class="nav-link" :to="{name : 'sortie'}">
                 <i class="fas fa-fw fa-money-check-alt"></i>
                 <span class="text-uppercase">Sortie de caisse</span>
             </router-link>

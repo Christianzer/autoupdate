@@ -3,7 +3,7 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <b-breadcrumb>
         <b-breadcrumb-item>Gestion de caisse OBF</b-breadcrumb-item>
-        <b-breadcrumb-item>Entrée de caisse</b-breadcrumb-item>
+        <b-breadcrumb-item>Sortie de caisse</b-breadcrumb-item>
       </b-breadcrumb>
     </div>
     <div class="text-right" >
@@ -47,7 +47,7 @@
                   class="mr-1"
                   @click="openModalFacture(row.item.id_personne)"
               >
-                faire une facture
+                faire un versement
               </b-button>
               <b-button
                   size="sm"
@@ -55,7 +55,7 @@
                   class="mr-1"
                   @click="redirect(row.item.id_personne)"
               >
-                listes de ses factures
+                listes de ses versement
               </b-button>
               <b-button
                   size="sm"
@@ -90,14 +90,14 @@
     </div>
 
     <Form ref="modal"></Form>
-    <Facture ref="modalFacture"></Facture>
+    <Sortie ref="modalFacture"></Sortie>
   </div>
 </template>
 
 <script>
 const axios = require('axios')
-import Form from "@/components/entree/form";
-import Facture from "@/components/entree/facture";
+import Form from "@/components/sortie/form";
+import Sortie from "@/components/sortie/sortie";
 export default {
   name: "index",
   data(){
@@ -127,7 +127,7 @@ export default {
     }
   },
   components: {
-    Form,Facture
+    Form,Sortie
   },
   created() {
     this.fetchclients()
@@ -153,7 +153,7 @@ export default {
       this.loader = true
     },
     openModal() {
-      this.$refs.modal.editMode = false
+      this.$refs.modal.updateMode = false
       this.$refs.modal.showModal()
     },
     openModalFacture(id) {
@@ -162,11 +162,11 @@ export default {
     },
     async modifier(dataPat) {
       this.$refs.modal.selectedTA = dataPat
-      this.$refs.modal.editMode = true
+      this.$refs.modal.updateMode = true
       this.$refs.modal.showModal()
     },
     async redirect(id) {
-      this.$router.push({ name: 'listes_factures', params: { id:id} })
+      this.$router.push({ name: 'listes_sorties', params: { id:id} })
     },
     async supprimer(code) {
       let urlapi = `http://127.0.0.1:8000/api/personne/${code}`
