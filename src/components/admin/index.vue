@@ -24,19 +24,6 @@
             <div class="card-body">
               <div class="row no-gutters align-items-center">
                 <div class="col mr-2">
-                  <div class="text-xs-perso font-weight-bold text-primary text-uppercase mb-1">Chiffres d'affaires</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">{{dashboard.chiffres}} FCFA</div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-3 col-md-3 mb-4">
-          <div class="card border-left-success-perso shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
                   <div class="text-xs-perso font-weight-bold text-primary text-uppercase mb-1">Entree de caisse</div>
                   <div class="h5 mb-0 font-weight-bold text-gray-800">{{dashboard.entree}} FCFA</div>
                 </div>

@@ -5,7 +5,7 @@
         <div class="col-md-6">
           <b-form-group
               label="Code">
-            <b-form-input readonly v-model="code_entre"></b-form-input>
+            <b-form-input readonly v-model="code_sortie"></b-form-input>
           </b-form-group>
         </div>
         <div class="col-md-6">
@@ -18,7 +18,7 @@
       <div class="row">
         <div class="col-md-6">
           <b-form-group
-              label="Date Entrée">
+              label="Date Sortie">
             <b-form-datepicker
                 placeholder="selectionner une date"
                 locale="fr-FR"
@@ -81,8 +81,8 @@ export default {
     return {
       apidata : 'http://gcaisse.test/api/facture',
       selected : null,
-      code_entre:'',
-      title:"Mise à jour entrée de caisse",
+      code_sortie:'',
+      title:"Mise à jour sortie de caisse",
       attachments:[],
       form: new FormData,
       formData: {
@@ -108,11 +108,11 @@ export default {
     showModalFacture() {
       var dateobj = new Date();
       var dateObject = dateobj.getFullYear();
-      let api = 'http://gcaisse.test/api/code'
+      let api = 'http://gcaisse.test/api/code_sortie'
       axios.get(api).then(response=>{
         let statut = response.status
         if (statut === 201){
-          this.code_entre = response.data
+          this.code_sortie = response.data
           console.log(response)
           this.$refs['my-modal-facture'].show()
         }
@@ -135,7 +135,7 @@ export default {
     async enregistrer(){},
     async save(){
       var data_facture = {
-        code:this.code_entre,
+        code:this.code_sortie,
         libelle: this.formData.libelle,
         date_entre : this.formData.date_facture,
         observation : this.formData.observation,
@@ -143,13 +143,13 @@ export default {
       }
 
       if (this.formData.justification != null){
-        this.form.append('code',this.code_entre)
+        this.form.append('code',this.code_sortie)
         for(let i=0; i<this.attachments.length;i++){
           this.form.append('pics[]',this.attachments[i]);
         }
         const config = { headers: { 'Content-Type': 'multipart/form-data' } };
         document.getElementById('upload-file').value=[];
-        axios.post('http://gcaisse.test/api/upload',this.form,config).then(response=>{
+        axios.post('http://gcaisse.test/api/upload_sortie',this.form,config).then(response=>{
           console.log(response);
         }).catch(response=>{
           console.log(response);
@@ -157,7 +157,7 @@ export default {
       }
 
 
-      await this.$http.post("http://gcaisse.test/api/facture",data_facture).then(response=>{
+      await this.$http.post("http://gcaisse.test/api/facture_sortie",data_facture).then(response=>{
         Fire.$emit('creationok');
         this.closeModalFacture()
       }).catch((err) => {

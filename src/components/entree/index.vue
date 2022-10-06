@@ -61,6 +61,27 @@
 
     </div>
 
+    <b-modal ref="mymodal" hide-footer title="Justificatif">
+      <div class="d-block text-center">
+        <b-table-simple  bordered
+                         hover
+                         responsive="xl" >
+          <b-thead>
+            <b-tr>
+              <b-th>Element</b-th>
+              <b-th>Action</b-th>
+            </b-tr>
+          </b-thead>
+          <b-tbody>
+            <b-tr v-for="item in elements" :key="item.code_entre">
+              <b-td>{{item.justif}}</b-td>
+              <b-td class="text-center"><b-button variant="success" @click="dowloadFile(item.id_justif)">Télécharger</b-button></b-td>
+            </b-tr>
+          </b-tbody>
+        </b-table-simple>
+      </div>
+      <b-button class="mt-3" variant="danger" block @click="hideModal">Fermer</b-button>
+    </b-modal>
     <Facture ref="modalFacture"></Facture>
   </div>
 </template>
@@ -73,6 +94,7 @@ export default {
   data(){
     return {
       filter :"",
+      elements:[],
       currentPage: 1,
       loader : false,
       perPage: 20,
@@ -122,6 +144,25 @@ export default {
 
   },
   methods: {
+    hideModal() {
+      this.$refs['mymodal'].hide()
+    },
+    async dowloadFile(id){
+      let api = 'http://gcaisse.test/api/dowload/'+id
+      axios({
+        url: api,
+        method: 'GET',
+        responseType: 'blob',
+      }).then((response) => {
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement('a');
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', 'file.pdf');
+        document.body.appendChild(fileLink);
+
+        fileLink.click();
+      });
+    },
     async fetchclients(){
       this.loader = false
       let api = 'http://gcaisse.test/api/listes_entre'
@@ -140,14 +181,24 @@ export default {
     },
 
     openModalJustif(id){
-      console.log(id)
+      let api = 'http://gcaisse.test/api/listes_justif/'+id
+       axios.get(api).then(response=>{
+        let statut = response.status
+        if (statut === 201){
+          this.elements = response.data
+          this.$refs['mymodal'].show()
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+
     },
     openModalFacture(id) {
       this.$refs.modalFacture.showModalFacture()
     },
 
     mounted(){
-      $(this.$refs.modalJustif).on("bv::modal::hide")
+      $(this.$refs.mymodal).on("bv::modal::hide")
     }
 
   },
