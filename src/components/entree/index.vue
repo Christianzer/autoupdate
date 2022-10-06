@@ -7,12 +7,12 @@
       </b-breadcrumb>
     </div>
     <div class="text-right" >
-      <b-button variant="primary" @click="openModal" >Créer un nouveau client</b-button>
+      <b-button variant="primary" @click="openModalFacture" >Saisir une nouvelle entrée</b-button>
     </div>
     <br>
     <div class="card shadow mb-4">
       <div class="card-header py-3">
-        Listes des clients
+        Entrée de caisse
       </div>
       <div class="card-body">
         <template v-if="loader === false">
@@ -31,51 +31,23 @@
               bordered
               hover
               responsive="xl"
-              :items="all_clients"
+              :items="listes"
               :fields="fields"
               :filter="filter"
               :current-page="currentPage"
               :per-page="perPage"
           >
-            <template v-slot:cell(nom)="row">
-              {{row.item.nom}} {{row.item.prenoms}}
+            <template v-slot:cell(justif)="row">
+              <span type="button" class="text-info" @click="openModalJustif(row.item.code_entre)" v-if="row.item.justif"><i class="fas fa-fw fa-folder"></i></span>
             </template>
-            <template v-slot:cell(actions)="row">
-              <b-button
-                  size="sm"
-                  variant="outline-success"
-                  class="mr-1"
-                  @click="openModalFacture(row.item.id_personne)"
-              >
-                faire une facture
-              </b-button>
-              <b-button
-                  size="sm"
-                  variant="outline-info"
-                  class="mr-1"
-                  @click="redirect(row.item.id_personne)"
-              >
-                listes de ses factures
-              </b-button>
-              <b-button
-                  size="sm"
-                  variant="outline-primary"
-                  @click="modifier(row.item)"
-                  class="mr-1"
-              >
-                modifier client
-              </b-button>
-
-              <b-button
-                  size="sm"
-                  variant="outline-danger"
-                  class="mr-1"
-                  @click="supprimer(row.item.id_personne)"
-              >
-                supprimer client
-              </b-button>
-
-
+            <template v-slot:cell(montant_entre_caisse)="row">
+              <span class="text-right font-weight-bold">{{new Intl.NumberFormat().format(row.item.montant_entre_caisse)}} FCFA</span>
+            </template>
+            <template v-slot:custom-foot="data">
+              <b-tr>
+                <b-td colspan="5" class="text-uppercase text-right text-danger font-weight-bold">TOTAL</b-td>
+                <b-td class="text-uppercase text-right text-danger font-weight-bold">{{new Intl.NumberFormat().format(totalListes)}} FCFA</b-td>
+              </b-tr>
             </template>
           </b-table>
           <b-pagination
@@ -89,45 +61,57 @@
 
     </div>
 
-    <Form ref="modal"></Form>
     <Facture ref="modalFacture"></Facture>
   </div>
 </template>
 
 <script>
 const axios = require('axios')
-import Form from "@/components/entree/form";
 import Facture from "@/components/entree/facture";
 export default {
   name: "index",
   data(){
     return {
       filter :"",
-      all_clients:[],
       currentPage: 1,
       loader : false,
-      perPage: 10,
+      perPage: 20,
+      listes:[],
+      totalListes:0,
       totalRows: null,
-      selectedCode: null,
-      fields : [
-        {
-          key:'nom',
-          label: 'Clients',
-          sortable:true,
+      fields:[
+        { key: 'code_entre',
+          label: 'Code',
+          sortable: true
         },
-        {
-          key:'telephone',
-          label:'Contact',
-          sortable:true,
+        { key: 'date_entre',
+          label: 'Date',
+          sortable: true
         },
-        {
-          key: 'actions'
-        }
-      ]
+        { key: 'libelle_entre_caisse',
+          label: 'Libelle / Source',
+          sortable: true
+        },
+        { key: 'observation',
+          sortable: true
+        },
+        { key: 'justif',
+          label: 'Justification',
+          class: 'text-center',
+          sortable: true
+        },
+        { key: 'montant_entre_caisse',
+          label: 'Montant',
+          class: 'text-right',
+          sortable: true
+        },
+
+      ],
+
     }
   },
   components: {
-    Form,Facture
+   Facture
   },
   created() {
     this.fetchclients()
@@ -140,45 +124,32 @@ export default {
   methods: {
     async fetchclients(){
       this.loader = false
-      let api = 'http://127.0.0.1:8000/api/personne'
+      let api = 'http://gcaisse.test/api/listes_entre'
       await axios.get(api).then(response=>{
         let statut = response.status
         if (statut === 200){
-          this.all_clients = response.data
-          this.totalRows = this.all_clients.length
+          this.listes = response.data.listes
+          this.totalListes = response.data.total
+          this.totalRows = this.listes.length
+          console.log(this.totalRows)
         }
       }).catch((err) => {
         console.log(err)
       })
       this.loader = true
     },
-    openModal() {
-      this.$refs.modal.editMode = false
-      this.$refs.modal.showModal()
+
+    openModalJustif(id){
+      console.log(id)
     },
     openModalFacture(id) {
-      this.$refs.modalFacture.personne = id
       this.$refs.modalFacture.showModalFacture()
     },
-    async modifier(dataPat) {
-      this.$refs.modal.selectedTA = dataPat
-      this.$refs.modal.editMode = true
-      this.$refs.modal.showModal()
-    },
-    async redirect(id) {
-      this.$router.push({ name: 'listes_factures', params: { id:id} })
-    },
-    async supprimer(code) {
-      let urlapi = `http://127.0.0.1:8000/api/personne/${code}`
-      await axios.delete(urlapi).then((response) => {
-        let statut = response.status
-        if (statut === 201) {
-          this.fetchclients()
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
+
+    mounted(){
+      $(this.$refs.modalJustif).on("bv::modal::hide")
+    }
+
   },
 
 }

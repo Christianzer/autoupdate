@@ -68,7 +68,7 @@ export default {
   },
   data() {
     return {
-      apidata : 'http://127.0.0.1:8000/api/personne',
+      apidata : 'http://gcaisse.test/api/personne',
       selected : null,
       title:"Faire un versement",
       formData: {
@@ -99,7 +99,7 @@ export default {
         code_facture : this.formData.code_facture,
         montant_paiement : this.formData.versement
       }
-      await this.$http.post("http://127.0.0.1:8000/api/paiement",paiement).then(response=>{
+      await this.$http.post("http://gcaisse.test/api/paiement",paiement).then(response=>{
         let statut = response.status
         if (statut === 201){
           Fire.$emit('paiement');

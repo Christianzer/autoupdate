@@ -140,7 +140,7 @@ export default {
   methods: {
     async fetchclients(){
       this.loader = false
-      let api = 'http://127.0.0.1:8000/api/personne'
+      let api = 'http://gcaisse.test/api/personne'
       await axios.get(api).then(response=>{
         let statut = response.status
         if (statut === 200){
@@ -169,7 +169,7 @@ export default {
       this.$router.push({ name: 'listes_sorties', params: { id:id} })
     },
     async supprimer(code) {
-      let urlapi = `http://127.0.0.1:8000/api/personne/${code}`
+      let urlapi = `http://gcaisse.test/api/personne/${code}`
       await axios.delete(urlapi).then((response) => {
         let statut = response.status
         if (statut === 201) {

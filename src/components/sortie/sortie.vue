@@ -52,7 +52,7 @@ export default {
   },
   data() {
     return {
-      apidata: 'http://127.0.0.1:8000/api/personne',
+      apidata: 'http://gcaisse.test/api/personne',
       selected: null,
       title: "Mise à jour facture",
       formData: {
@@ -92,7 +92,7 @@ export default {
         montant: this.formData.montant
       }
 
-      await this.$http.post("http://127.0.0.1:8000/api/sortie", paiement).then(response => {
+      await this.$http.post("http://gcaisse.test/api/sortie", paiement).then(response => {
         this.closeModalFacture()
       }).catch((err) => {
         console.log(err)

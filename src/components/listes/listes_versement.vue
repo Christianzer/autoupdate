@@ -93,7 +93,7 @@ export default {
   methods: {
     async fetchclients() {
       this.loader = false
-      let api = 'http://127.0.0.1:8000/api/versements/'+this.$route.params.id
+      let api = 'http://gcaisse.test/api/versements/'+this.$route.params.id
       await axios.get(api).then(response => {
         console.log(response.data)
         this.all_clients = response.data.listes_paiement

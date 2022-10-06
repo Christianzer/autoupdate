@@ -43,7 +43,7 @@ export default {
   },
   data() {
     return {
-      apidata : 'http://127.0.0.1:8000/api/personne',
+      apidata : 'http://gcaisse.test/api/personne',
       selected : null,
       title:"Mise à jour clients",
       formData: {

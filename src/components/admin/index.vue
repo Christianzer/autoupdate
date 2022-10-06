@@ -77,7 +77,7 @@ export default {
   methods:{
     async fetchdata(){
       this.isLoading = false
-      await this.$http.get("http://127.0.0.1:8000/api/dashboard").then((response) => {
+      await this.$http.get("http://gcaisse.test/api/dashboard").then((response) => {
         this.dashboard = response.data
       }).catch((err) => {
         console.log(err)
