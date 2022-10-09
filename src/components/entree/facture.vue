@@ -159,6 +159,7 @@ export default {
 
       await this.$http.post("http://gcaisse.test/api/facture",data_facture).then(response=>{
         Fire.$emit('creationok');
+	  this.reset();
         this.closeModalFacture()
       }).catch((err) => {
         console.log(err)
@@ -173,6 +174,7 @@ export default {
       this.formData.observation = ''
       this.formData.montant = 0
       this.formData.justification = null
+	this.attachments = []
     },
   },
 
