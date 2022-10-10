@@ -60,36 +60,36 @@
                 <b-th rowspan="2">Date</b-th>
                 <b-th colspan="2">Entrée de caisse</b-th>
                 <b-th colspan="2">Sortie de caisse</b-th>
-                <b-th rowspan="2">Difference</b-th>
+
               </b-tr>
               <b-tr>
 
                 <b-th>Libelle</b-th>
-                <b-th>Montant</b-th>
+                <b-th>Montant FCFA</b-th>
                 <b-th>Libelle</b-th>
-                <b-th>Montant</b-th>
+                <b-th>Montant FCFA</b-th>
 
               </b-tr>
             </b-thead>
 
             <b-tbody>
               <b-tr v-for="item in element" :key="element.id_rapport">
-                <b-td v-if="item.date_entre === null && item.date_sortie != null">{{item.date_sortie}}</b-td>
-                <b-td v-if="item.date_sortie === null && item.date_entre != null">{{item.date_entre}}</b-td>
-                <b-td v-if="item.date_entre  != null && item.date_sortie != null">{{item.date_entre}}</b-td>
+                <b-td v-if="item.date_entre === null && item.date_sortie != null">{{changerDate(item.date_sortie)}}</b-td>
+                <b-td v-if="item.date_sortie === null && item.date_entre != null">{{changerDate(item.date_entre)}}</b-td>
+                <b-td v-if="item.date_entre  != null && item.date_sortie != null">{{changerDate(item.date_entre)}}</b-td>
                 <b-td>{{item.libelle_entre_caisse}}</b-td>
-                <b-td>{{item.montant_entre_caisse}}</b-td>
+                <b-td>{{new Intl.NumberFormat().format(item.montant_entre_caisse)}}</b-td>
                 <b-td>{{item.libelle_sortie_caisse}}</b-td>
-                <b-td>{{item.montant_sortie_caisse}}</b-td>
-                <b-td>{{item.montant_entre_caisse - item.montant_sortie_caisse}}</b-td>
+                <b-td>{{new Intl.NumberFormat().format(item.montant_sortie_caisse)}}</b-td>
+
               </b-tr>
             </b-tbody>
             <b-tfoot>
               <b-tr class="text-right font-weight-bold text-danger">
-                <b-td>TOTAL</b-td>
-                <b-td colspan="2">{{total1}}</b-td>
-                <b-td colspan="2">{{total2}}</b-td>
-                <b-td>{{total1 - total2}}</b-td>
+                <b-td>TOTAL FCFA</b-td>
+                <b-td colspan="2">{{new Intl.NumberFormat().format(total1)}}</b-td>
+                <b-td colspan="2">{{new Intl.NumberFormat().format(total2)}}</b-td>
+
               </b-tr>
             </b-tfoot>
           </b-table-simple>
@@ -136,6 +136,9 @@ export default {
         console.log(err)
       })
       this.loader = true
+    },
+    changerDate(value){
+      return moment(value).format("DD-MM-YYYY")
     }
   }
 }
