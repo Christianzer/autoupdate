@@ -148,7 +148,7 @@ export default {
       this.$refs['mymodal'].hide()
     },
     async dowloadFile(id){
-      let api = 'http://gcaisse.test/api/dowload_sortie/'+id
+      let api = 'http://127.0.0.1:8000/api/dowload_sortie/'+id
       axios({
         url: api,
         method: 'GET',
@@ -165,7 +165,7 @@ export default {
     },
     async fetchclients(){
       this.loader = false
-      let api = 'http://gcaisse.test/api/listes_sortie'
+      let api = 'http://127.0.0.1:8000/api/listes_sortie'
       await axios.get(api).then(response=>{
         let statut = response.status
         if (statut === 200){
@@ -181,7 +181,7 @@ export default {
     },
 
     openModalJustif(id){
-      let api = 'http://gcaisse.test/api/listes_justif_sortie/'+id
+      let api = 'http://127.0.0.1:8000/api/listes_justif_sortie/'+id
        axios.get(api).then(response=>{
         let statut = response.status
         if (statut === 201){

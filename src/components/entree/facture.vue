@@ -79,7 +79,7 @@ export default {
   name: "facture",
   data() {
     return {
-      apidata : 'http://gcaisse.test/api/facture',
+      apidata : 'http://127.0.0.1:8000/api/facture',
       selected : null,
       code_entre:'',
       title:"Mise à jour entrée de caisse",
@@ -108,7 +108,7 @@ export default {
     showModalFacture() {
       var dateobj = new Date();
       var dateObject = dateobj.getFullYear();
-      let api = 'http://gcaisse.test/api/code'
+      let api = 'http://127.0.0.1:8000/api/code'
       axios.get(api).then(response=>{
         let statut = response.status
         if (statut === 201){
@@ -149,7 +149,7 @@ export default {
         }
         const config = { headers: { 'Content-Type': 'multipart/form-data' } };
         document.getElementById('upload-file').value=[];
-        axios.post('http://gcaisse.test/api/upload',this.form,config).then(response=>{
+        axios.post('http://127.0.0.1:8000/api/upload',this.form,config).then(response=>{
           console.log(response);
         }).catch(response=>{
           console.log(response);
@@ -157,7 +157,7 @@ export default {
       }
 
 
-      await this.$http.post("http://gcaisse.test/api/facture",data_facture).then(response=>{
+      await this.$http.post("http://127.0.0.1:8000/api/facture",data_facture).then(response=>{
         Fire.$emit('creationok');
 	  this.reset();
         this.closeModalFacture()

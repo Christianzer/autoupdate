@@ -52,6 +52,8 @@
           </div>
         </template>
         <template v-else>
+
+
           <b-table-simple  bordered
                            hover
                            responsive="xl" >
@@ -61,6 +63,7 @@
                 <b-th colspan="2">Entrée de caisse</b-th>
                 <b-th colspan="2">Sortie de caisse</b-th>
 
+
               </b-tr>
               <b-tr>
 
@@ -69,30 +72,30 @@
                 <b-th>Libelle</b-th>
                 <b-th>Montant FCFA</b-th>
 
+
               </b-tr>
             </b-thead>
 
             <b-tbody>
               <b-tr v-for="item in element" :key="element.id_rapport">
-                <b-td v-if="item.date_entre === null && item.date_sortie != null">{{changerDate(item.date_sortie)}}</b-td>
-                <b-td v-if="item.date_sortie === null && item.date_entre != null">{{changerDate(item.date_entre)}}</b-td>
-                <b-td v-if="item.date_entre  != null && item.date_sortie != null">{{changerDate(item.date_entre)}}</b-td>
+                <b-td>{{changerDate(item.date_journe)}}</b-td>
                 <b-td>{{item.libelle_entre_caisse}}</b-td>
-                <b-td>{{new Intl.NumberFormat().format(item.montant_entre_caisse)}}</b-td>
+                <b-td>{{isNulle(item.montant_entre_caisse)}}</b-td>
                 <b-td>{{item.libelle_sortie_caisse}}</b-td>
-                <b-td>{{new Intl.NumberFormat().format(item.montant_sortie_caisse)}}</b-td>
-
+                <b-td>{{isNulle(item.montant_sortie_caisse)}}</b-td>
               </b-tr>
             </b-tbody>
             <b-tfoot>
               <b-tr class="text-right font-weight-bold text-danger">
                 <b-td>TOTAL FCFA</b-td>
-                <b-td colspan="2">{{new Intl.NumberFormat().format(total1)}}</b-td>
-                <b-td colspan="2">{{new Intl.NumberFormat().format(total2)}}</b-td>
-
+                <b-td colspan="2">{{isNulle(total1)}}</b-td>
+                <b-td colspan="2">{{isNulle(total2)}}</b-td>
               </b-tr>
             </b-tfoot>
           </b-table-simple>
+
+
+
         </template>
       </div>
     </div>
@@ -107,7 +110,7 @@ export default {
   name: "index",
   data() {
     return {
-      apidata : 'http://gcaisse.test/api/facture',
+      apidata : 'http://127.0.0.1:8000/api/facture',
       formData: {
         date_debut:moment().format('YYYY-MM-DD'),
         date_fin:moment().format('YYYY-MM-DD'),
@@ -128,8 +131,8 @@ export default {
         date_debut : this.formData.date_debut,
         date_fin:this.formData.date_fin
       }
-      await this.$http.post("http://gcaisse.test/api/rapport",data).then(response=>{
-        this.element = response.data.resultat
+      await this.$http.post("http://127.0.0.1:8000/api/rapport",data).then(response=>{
+        this.element= response.data.resultat
         this.total1 = response.data.entree
         this.total2 = response.data.sortie
       }).catch((err) => {
@@ -139,6 +142,13 @@ export default {
     },
     changerDate(value){
       return moment(value).format("DD-MM-YYYY")
+    },
+    isNulle(value){
+      if (value === null){
+        return " ";
+      }else {
+        return new Intl.NumberFormat().format(value)
+      }
     }
   }
 }
