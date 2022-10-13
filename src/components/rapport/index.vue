@@ -2,7 +2,7 @@
   <div class="container-fluid p-3">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
       <b-breadcrumb>
-        <b-breadcrumb-item>Gestion de caisse OBF</b-breadcrumb-item>
+        <b-breadcrumb-item>Gestion de caisse CIAT</b-breadcrumb-item>
         <b-breadcrumb-item>Rapport de caisse</b-breadcrumb-item>
       </b-breadcrumb>
     </div>
@@ -110,7 +110,7 @@ export default {
   name: "index",
   data() {
     return {
-      apidata : 'http://127.0.0.1:8000/api/facture',
+      apidata : 'http://gcaisse-backend.sodenci.com/api/facture',
       formData: {
         date_debut:moment().format('YYYY-MM-DD'),
         date_fin:moment().format('YYYY-MM-DD'),
@@ -131,7 +131,7 @@ export default {
         date_debut : this.formData.date_debut,
         date_fin:this.formData.date_fin
       }
-      await this.$http.post("http://127.0.0.1:8000/api/rapport",data).then(response=>{
+      await this.$http.post("http://gcaisse-backend.sodenci.com/api/rapport",data).then(response=>{
         this.element= response.data.resultat
         this.total1 = response.data.entree
         this.total2 = response.data.sortie

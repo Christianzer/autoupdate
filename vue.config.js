@@ -10,10 +10,10 @@ module.exports = {
         publish: [
           { provider: 'github',owner:'Christianzer',repo:'autoupdate'},
         ],
-        productName: "G-CAISSE OBF",
+        productName: "G-CAISSE CIAT",
         appId: 'test.com',
         win: {
-          icon: 'build/icon.ico',
+          icon: 'build/logo_obf.ico',
         },
       }
     }
